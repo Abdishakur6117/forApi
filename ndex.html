@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send WhatsApp Message</title>
+  <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+  <!-- <script src="app.js" defer></script> -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 py-10">
+  <div class="container max-w-md mx-auto bg-white p-8 rounded-lg shadow">
+    <form id="sendMessageForm" >
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">Phone Number</label>
+        <input type="text" id="phone" name="phone" placeholder="Enter phone number (+252...)" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+      <div class="mb-4">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Send Message</button>
+      </div>
+    </form>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $('#sendMessageForm').submit(function (e) {
+    e.preventDefault();
+
+    const phone = $('#phone').val();
+    const name = $('#name').val();
+
+    // Validate phone number in international format
+    const phoneRegex = /^\+\d{10,15}$/; // Matches phone numbers like +252618266117
+    if (!phoneRegex.test(phone)) {
+      alert('Invalid phone number! Please enter it in international format, e.g., +252618266117');
+      return;
+    }
+
+    // Prepare the form data
+    const formData = {
+      token: 'mofcgbsdo4ve3bwh',  // Your UltraMsg API token
+      to: phone,
+      body: `Hi ${name}, congratulations! You have successfully sent a message via WhatsApp!`, // Message to send
+    };
+
+    // Send request to UltraMsg API
+    $.ajax({
+      type: 'POST',
+      url: 'https://api.ultramsg.com/instance106531/messages/chat',  // URL for UltraMsg API
+      data: formData,
+      dataType: 'json',
+      success: function (response) {
+        console.log('Response:', response);
+        if (response.sent) {
+          alert('Message sent successfully!');
+        } else {
+          alert('Failed to send message: ' + (response.message || 'Unknown error.'));
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error('Error:', error);
+        alert('An error occurred while sending the message. Please try again.');
+      }
+    });
+  });
+</script>
+</body>
+</html>
